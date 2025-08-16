@@ -1,6 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
+--player
 player={
  meowths={},
  cnt=0,
@@ -48,18 +49,21 @@ function player:update()
  end
 -- jump
  if btnp(❎) and self.stand then
+  sfx(1)
   self.dy = -self.boost
   self.stand = false
   self.running = false
  end
 -- shout
  if btn(🅾️) then
-	 if t==0 then
-  	self.cry=true
-	  add(self.meowths,meow:new(self.x,self.y,self.flipx,self.spd))
-	  t=50
-	 else
-	  t-=1
+  if btnp(⬆️) then
+	  if t==0 then
+    	self.cry=true
+	    add(self.meowths,meow:new(self.x,self.y,self.flipx,self.spd))
+  	  t=50
+	 	else
+		  t-=1
+	  end
 	 end
  end
  
@@ -89,6 +93,7 @@ end
 
 function player:animate()
  if self.running then
+  if (i%5==0) sfx(0)
   if self.cnt==0 then
    self.sp = self.sp == 42 and 40 or 42
    self.cnt=3
@@ -123,9 +128,9 @@ end
 
 function player:hit()
   self.lives-=1
-  local dir = self.flipx and -1 or 1
-  self.dx = 4*dir
-  self.dy -= 3
+  local dir = self.flipx and 1 or -1
+  self.x -= 16*dir
+  self.dy -= 4
 end
 
 __gfx__
@@ -135,3 +140,6 @@ __gfx__
 00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+__sfx__
+0000000006450084500d4500f4501a450214402243000400004000040000400004000040000400004000040000400004000040000400004000040000400004000040000400004000040000400004000040000400
+00060000190611c0511f04122031280051f000220002200021000220001f0001f000220002200021000220001f0001f0002e0012e0002d0002e0002b0002b0002b0022b005000000000000000000000000000000
