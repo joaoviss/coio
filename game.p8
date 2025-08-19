@@ -4,7 +4,7 @@ __lua__
 --gato coio
 --por gisele henriques
 function _init()
- state='game'
+-- state='game'
  intro_init()
  menu_init()
  game_init()
@@ -134,7 +134,7 @@ function game_draw()
  for e in all(enemies) do
   e:draw()
  end
- print(tostr(p.inv),0,8)
+-- print(tostr(p.inv),0,8)
  camera(cx,cy)
  draw_hud()
 end
