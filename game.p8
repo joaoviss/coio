@@ -4,7 +4,7 @@ __lua__
 --gato coio
 --por gisele henriques
 function _init()
--- state='game'
+ state='game'
  intro_init()
  menu_init()
  game_init()
@@ -162,7 +162,7 @@ function game_update()
  p:animate()
  updt_hud(p)
  if (p.y>128) p:die()
-end												
+end
 -->8
 	--gameover
 function gameover_draw()
@@ -327,11 +327,12 @@ function snake:new(x,y,acc)
   x=x, y=y,
   acc=rnd()-.5>0 and acc or -acc
  }
- return setmetatable(o,{__index=self})
+ return setmetatable(o,{__index=enemy})
 end
 
+--[[
 function snake:draw()
- spr(self.sp, self.x, self.y, self.w, self.h, self.flipx)
+  spr(self.sp, self.x, self.y, self.w, self.h, self.flipx)
 end
 
 function snake:update()
@@ -353,7 +354,6 @@ function snake:update()
   self.dx=0
   self.acc*=-1
  end
- self:animate()
 end
 
 function snake:animate()
@@ -361,20 +361,50 @@ function snake:animate()
   self.sp+=self.sp<self.msp and 1 or -3
  end
 end
+--]]
 -->8
 --[[
-
 --enemy
-enemy = {sp=0,z=2,h=2}
+enemy = {
+ sp=0,msp=1,
+ x=0,y=0,
+ dx=0,dy=0,
+ w=2,h=2,
+ flipx=false
+}
 
-
-
-function enemy:new(x,y,sp,w,h)
- local o = {x=x,y=y,sp=sp,w=w,h=h}
- return setmetatable(o,{__index=self})
+function enemy:draw()
+ spr(self.sp, self.x, self.y, self.x, self.h,self.flipx,false)
 end
--->8
+
+function enemy:update()
+ self.dx *= f
+ self.dx+=self.acc
+ if self.dx < 0 then
+  self.flipx = true
+  self.dx = limit(self.dx,mdx)
+ elseif self.dx > 0 then
+  self.flipx = false
+  self.dx = limit(self.dx,mdx)
+ end
+ gravity(self)
+ self.x += self.dx
+ if collision(self,'left',0) or
+ collision(self,'right',0) or
+ self.x<0 or self.x>1116 then
+  self.x+=(sgn(self.dx)*-1)
+  self.dx=0
+  self.acc*=-1
+ end
+end
+
+function enemy:animate()
+ if i%5==0 then
+  self.sp+=self.sp<self.msp and 1 or -(self.msp-self.sp)
+ end
+end
 --]]
+-->8
 --char
 char = {}
 
